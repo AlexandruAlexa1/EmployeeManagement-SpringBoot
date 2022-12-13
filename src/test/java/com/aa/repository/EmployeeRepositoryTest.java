@@ -78,6 +78,16 @@ public class EmployeeRepositoryTest {
 		
 		assertThat(!findedEmployee.isPresent());
 	}
+	
+	@Test
+	void findByEmail() {
+		String email = "employee1@yahoo.com";
+		
+		Employee findedEmployee = repo.findByEmail(email);
+		
+		assertNotNull(findedEmployee);
+		assertEquals(email, findedEmployee.getEmail());
+	}
 }
 
 

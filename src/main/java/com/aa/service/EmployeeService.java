@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.aa.domain.Employee;
+import com.aa.exception.DuplicateEmailException;
 import com.aa.exception.EmployeeNotFoundException;
 import com.aa.repository.EmployeeRepository;
 
@@ -29,10 +30,21 @@ public class EmployeeService {
 		}
 	}
 	
-	public Employee save(Employee employee) {
+	public Employee save(Employee employee) throws DuplicateEmailException {
+		checkDuplicateEmail(employee);
+		
 		return repo.save(employee);
 	}
 	
+	private void checkDuplicateEmail(Employee employeeInForm) throws DuplicateEmailException {
+		String email = employeeInForm.getEmail();
+		Employee employeeInDB = repo.findByEmail(email);
+		
+		if (employeeInDB != null) {
+			throw new DuplicateEmailException("This E-mail: " + email + " already exist. Please choose another E-mail.");
+		}
+	}
+
 	public void delete(Integer id) throws EmployeeNotFoundException {
 		if (!repo.existsById(id)) {
 			throw new EmployeeNotFoundException("Could not find any Employee with ID: " + id);

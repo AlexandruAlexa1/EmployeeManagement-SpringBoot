@@ -6,4 +6,6 @@ import com.aa.domain.Employee;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
+	public Employee findByEmail(String email);
+
 }

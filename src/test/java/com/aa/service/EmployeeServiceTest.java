@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 
 import com.aa.domain.Address;
 import com.aa.domain.Employee;
+import com.aa.exception.DuplicateEmailException;
 import com.aa.exception.EmployeeNotFoundException;
 import com.aa.repository.EmployeeRepository;
 
@@ -88,7 +89,7 @@ public class EmployeeServiceTest {
 	}
 	
 	@Test
-	void save() {
+	void save() throws DuplicateEmailException {
 		when(repo.save(any(Employee.class))).thenReturn(employee_1);
 		
 		Employee savedEmployee = service.save(employee_1);

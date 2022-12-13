@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.aa.domain.Employee;
+import com.aa.exception.DuplicateEmailException;
 import com.aa.exception.EmployeeNotFoundException;
 import com.aa.service.EmployeeService;
 
@@ -49,7 +50,7 @@ public class EmployeeRestController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Employee> save(@RequestBody @Valid Employee employee) {
+	public ResponseEntity<Employee> save(@RequestBody @Valid Employee employee) throws DuplicateEmailException {
 		Employee savedEmployee = service.save(employee);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedEmployee.getId()).toUri();
@@ -58,7 +59,7 @@ public class EmployeeRestController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<Employee> update(@RequestBody @Valid Employee employee) {
+	public ResponseEntity<Employee> update(@RequestBody @Valid Employee employee) throws DuplicateEmailException {
 		return new ResponseEntity<>(service.save(employee), HttpStatus.OK);
 	}
 	
