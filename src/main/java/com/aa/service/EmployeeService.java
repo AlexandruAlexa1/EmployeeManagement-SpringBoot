@@ -1,10 +1,9 @@
 package com.aa.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.aa.domain.Employee;
@@ -18,8 +17,8 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository repo;
 	
-	public Page<Employee> findAll(int pageNum, int pageSize) {
-		return repo.findAll(PageRequest.of(pageNum, pageSize));
+	public List<Employee> findAll() {
+		return repo.findAll();
 	}
 	
 	public Employee get(Integer id) throws EmployeeNotFoundException {
@@ -31,13 +30,30 @@ public class EmployeeService {
 	}
 	
 	public Employee save(Employee employee) throws DuplicateEmailException {
-		checkDuplicateEmail(employee);
+		boolean isEditMode = (employee.getId() != null);
+		
+		if (isEditMode) {
+			Employee employeeInDB = repo.findById(employee.getId()).get();
+			
+			checkEmail(employeeInDB, employee);
+		} else {
+			checkDuplicateEmail(employee.getEmail());
+		}
 		
 		return repo.save(employee);
 	}
 	
-	private void checkDuplicateEmail(Employee employeeInForm) throws DuplicateEmailException {
-		String email = employeeInForm.getEmail();
+	private void checkEmail(Employee employeeInDB, Employee employee) throws DuplicateEmailException {
+		boolean isTheSameEmail = (employeeInDB.getEmail().contentEquals(employee.getEmail()));
+		
+		if (isTheSameEmail) {
+			employee.setEmail(employeeInDB.getEmail());
+		} else {
+			checkDuplicateEmail(employee.getEmail());
+		}
+	}
+
+	private void checkDuplicateEmail(String email) throws DuplicateEmailException {
 		Employee employeeInDB = repo.findByEmail(email);
 		
 		if (employeeInDB != null) {

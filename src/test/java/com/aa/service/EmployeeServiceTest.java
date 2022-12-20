@@ -20,9 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import com.aa.domain.Address;
 import com.aa.domain.Employee;
@@ -52,21 +49,12 @@ public class EmployeeServiceTest {
 	
 	@Test
 	void findAll() {
-		int pageNum = 0;
-		int pageSize = 5;
+		when(repo.findAll()).thenReturn(List.of(employee_1, employee_2));
+
+		List<Employee> listEmployees = service.findAll();
 		
-		List<Employee> listEmployees = List.of(employee_1, employee_2);
-		Page<Employee> pageImpl = new PageImpl<>(listEmployees);
-		
-		when(repo.findAll(PageRequest.of(pageNum, pageSize))).thenReturn(pageImpl);
-		
-		Page<Employee> page = service.findAll(pageNum, pageSize);
-		List<Employee> pageContent = page.getContent();
-		
-		assertNotNull(pageContent);
-		assertEquals(2, pageContent.size());
-		
-		pageContent.forEach(item -> System.out.println(item));
+		assertNotNull(listEmployees);
+		assertEquals(2, listEmployees.size());
 	}
 	
 	@Test
@@ -112,22 +100,3 @@ public class EmployeeServiceTest {
 		verify(repo, times(1)).deleteById(id);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

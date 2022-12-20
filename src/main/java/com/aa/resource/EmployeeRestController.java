@@ -1,12 +1,11 @@
 package com.aa.resource;
 
 import java.net.URI;
-import java.util.Optional;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,15 +31,14 @@ public class EmployeeRestController {
 	private EmployeeService service;
 
 	@GetMapping
-	public ResponseEntity<Page<Employee>> listAll(@RequestParam Optional<Integer> pageNum,
-			@RequestParam Optional<Integer> pageSize) {
-		Page<Employee> page = service.findAll(pageNum.orElse(0), pageSize.orElse(5));
+	public ResponseEntity<List<Employee>> listAll() {
+		List<Employee> listEmployees = service.findAll();
 		
-		if (page.getContent().size() == 0) {
+		if (listEmployees.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
 		
-		return new ResponseEntity<>(page, HttpStatus.OK);
+		return new ResponseEntity<>(listEmployees, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

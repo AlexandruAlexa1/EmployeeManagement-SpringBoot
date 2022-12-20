@@ -97,15 +97,3 @@ public class EmployeeIntegrationTest {
 		restTemplate.delete(baseUrl + "/" + id);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
